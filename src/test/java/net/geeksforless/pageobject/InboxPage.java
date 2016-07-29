@@ -1,5 +1,7 @@
 package net.geeksforless.pageobject;
 
+import java.io.IOException;
+
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,6 +25,9 @@ public class InboxPage {
 	@FindBy(linkText = "Light version")
 	private WebElement lightVersionLink;
 	
+	//Object of WebDriver
+	private WebDriver driver;
+	
 	/*
 	 * Constructor that using PageFactory to initialize elements on page
 	 * and initialize WebDriverWait
@@ -30,14 +35,22 @@ public class InboxPage {
 	public InboxPage(WebDriver driver) {
 		PageFactory.initElements(driver, this);
 		wait = new WebDriverWait(driver, 20);
+		this.driver = driver;
 	}	
 
 	/*
 	 * Realization of clickLightVersionLink() method
 	 */
 	public void clickLightVersionLink() throws NoSuchElementException {
+		//Creating screenshot
+		try {
+			ScreenshotMaker.makeNewScreenshot("inbox_page", driver);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		lightVersionLink.click();	
 		wait.until(ExpectedConditions.urlToBe("https://mail.yandex.com/lite/inbox"));
+		
 	}
 
 }

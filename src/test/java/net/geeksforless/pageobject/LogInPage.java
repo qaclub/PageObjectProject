@@ -1,5 +1,7 @@
 package net.geeksforless.pageobject;
 
+import java.io.IOException;
+
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,11 +26,15 @@ public class LogInPage {
 	@FindBy(xpath = "//span[text()='Log in']")
 	private WebElement loginButton;
 	
+	//Object of WebDriver
+	private WebDriver driver;
+	
 	/*
 	 * Constructor that using PageFactory to initialize elements on page
 	 */
 	public LogInPage(WebDriver driver) {
-		PageFactory.initElements(driver, this);
+		PageFactory.initElements(driver, this);		
+		this.driver = driver;
 	}
 
 	/*
@@ -37,6 +43,12 @@ public class LogInPage {
 	public void logIn(String email, String password) throws NoSuchElementException {		
 		emailInput.sendKeys(email);
 		passwordInput.sendKeys(password);
+		//Creating screenshot
+		try {
+			ScreenshotMaker.makeNewScreenshot("login_page", driver);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		loginButton.click();		
 	}
 

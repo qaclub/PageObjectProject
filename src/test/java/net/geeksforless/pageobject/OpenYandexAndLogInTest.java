@@ -1,11 +1,18 @@
 package net.geeksforless.pageobject;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 
 /*
  * Test class
@@ -28,9 +35,15 @@ public class OpenYandexAndLogInTest {
 	 * Before method where all pre-testing settings are initialized
 	 */
 	@Before
-	public void setUp() {
-		//Initialized driver
-		driver = new FirefoxDriver();
+	public void setUp() throws IOException {
+		//Create file for Firebug extension
+		File extension = new File("src/main/resources/firebug-2.0.17-fx.xpi");
+		//Create new Firefox profile
+		FirefoxProfile profile = new FirefoxProfile();		
+		//Add extension to the profile
+		profile.addExtension(extension);
+		//Initialized driver with created profile
+		 driver = new FirefoxDriver(profile);
 		
 		//Object of pages are initialized		
 		homePage = new HomePage(driver);
@@ -47,15 +60,37 @@ public class OpenYandexAndLogInTest {
 	 * Test method
 	 */
 	@Test
-	public void openLogIn() {	
+	public void openLogIn() throws InterruptedException {
+		//Create new HashSet for cookies
+		Set<Cookie> setOfCookies = new HashSet<>();
+		
+		//Get all the cookies
+		setOfCookies = driver.manage().getCookies();
+		
+		//Print all the cookies names and values
+		for (Cookie cookie : setOfCookies) {
+			System.out.println("Cookie named - " + cookie.getName() + " has value - " + cookie.getValue());
+		}
+		
+		//Set new cookie with name and value
+		Cookie customCookie = new Cookie("gfl_cookie", "42");
+		driver.manage().addCookie(customCookie);
+		
+		//Delete cookie by name
+		driver.manage().deleteCookieNamed("gfl_cookie");
+		
+		//Delete all the cookies
+		driver.manage().deleteAllCookies();
+		
 		//Click log in link on Home page
 		homePage.clickLogInLink();
 		
 		//Log in to mail box
-		logInPage.logIn(email, password);
+		logInPage.logIn(email, password);		
 		
 		//Click on 'Light version' link
 		inboxPage.clickLightVersionLink();
+		
 	}
 	
 	/*

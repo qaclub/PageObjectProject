@@ -1,5 +1,6 @@
 package net.geeksforless.pageobject;
 
+import java.io.IOException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -18,18 +19,28 @@ public class HomePage {
 	@FindBy(linkText = "Log in")
 	private WebElement logInLink;	
 	
+	//Object of WebDriver
+	private WebDriver driver;
+	
 	/*
 	 * Constructor that using PageFactory to initialize elements on page
 	 */
 	public HomePage(WebDriver driver) {
 		PageFactory.initElements(driver, this);
+		this.driver = driver;
 	}
 	
 	/*
 	 * Realization of clickLogInLink() method
 	 */
-	public void clickLogInLink() throws NoSuchElementException {		
-		logInLink.click();	
+	public void clickLogInLink() throws NoSuchElementException {
+		//Creating screenshot
+		try {
+			ScreenshotMaker.makeNewScreenshot("home_page", driver);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logInLink.click();			
 	}
 
 }
